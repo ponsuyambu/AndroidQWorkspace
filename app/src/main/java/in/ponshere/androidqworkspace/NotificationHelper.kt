@@ -130,37 +130,6 @@ class NotificationHelper(private val context: Context) {
                 )
             )
         builder.setContentText("Content")
-        if (fromUser) {
-            // This is a Bubble explicitly opened by the user.
-            builder.setContentText("Content")
-        } else {
-//            // Let's add some more content to the notification in case it falls back to a normal notification.
-//            val lastOutgoingId = chat.messages.last { !it.isIncoming }.id
-//            val newMessages = chat.messages.filter { message ->
-//                message.id > lastOutgoingId
-//            }
-//            val lastMessage = newMessages.last()
-//            builder
-//                .setStyle(
-//                    if (lastMessage.photo != null) {
-//                        Notification.BigPictureStyle()
-//                            .bigPicture(BitmapFactory.decodeResource(context.resources, lastMessage.photo))
-//                            .bigLargeIcon(icon)
-//                            .setSummaryText(lastMessage.text)
-//                    } else {
-//                        Notification.MessagingStyle(person)
-//                            .apply {
-//                                //for (message in newMessages) {
-//                                    addMessage("a", "12/4/2019", person)
-//                                //}
-//                            }
-//                            .setGroupConversation(false)
-//                    }
-//                )
-//                .setContentText(newMessages.joinToString("\n") { it.text })
-//                .setWhen(newMessages.last().timestamp)
-        }
-
         notificationManager.notify(1, builder.build())
     }
 
@@ -172,24 +141,4 @@ class NotificationHelper(private val context: Context) {
         val channel = notificationManager.getNotificationChannel(CHANNEL_NEW_MESSAGES)
         return notificationManager.areBubblesAllowed() && channel.canBubble()
     }
-}
-
-@WorkerThread
-private fun roundIcon(context: Context, @DrawableRes id: Int): Bitmap {
-    val original = BitmapFactory.decodeResource(context.resources, id)
-    val width = original.width
-    val height = original.height
-    val rect = Rect(0, 0, width, height)
-    val icon = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-    val paint = Paint().apply {
-        isAntiAlias = true
-        color = Color.BLACK
-    }
-    icon.applyCanvas {
-        drawARGB(0, 0, 0, 0)
-        drawOval(0f, 0f, width.toFloat(), height.toFloat(), paint)
-        paint.blendMode = BlendMode.SRC_IN
-        drawBitmap(original, rect, rect, paint)
-    }
-    return icon
 }
